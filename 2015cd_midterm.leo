@@ -39,6 +39,7 @@
 <v t="amd.20150503185058.1"><vh>drawspur</vh></v>
 <v t="amd.20150503185210.1"><vh>drawspuraction</vh></v>
 <v t="2015.20150625231632.1"><vh>drawspuraction2</vh></v>
+<v t="2015.20150626150640.1"><vh>gears</vh></v>
 <v t="office.20150504093049.1"><vh>cube</vh></v>
 <v t="office.20150504093053.1"><vh>cubeaction</vh></v>
 <v t="office.20150504183254.1"><vh>fileuploadform</vh></v>
@@ -303,7 +304,7 @@ QLineEdit#editorLabel {
 vertical: body pane on the botton</t>
 <t tx="2015.20150330144929.1714"></t>
 <t tx="2015.20150625231632.1">@cherrypy.expose
-# N 為齒數, M 為模數, P 為壓力角
+# N 為齒數1, O為齒數2,M 為模數, P 為壓力角
 def drawspur3(self, N=15,O=24, M=10, P=20):
     outstring = '''
 &lt;!DOCTYPE html&gt; 
@@ -476,6 +477,262 @@ brython();
 @cherrypy.expose
 # N 為齒數, M 為模數, P 為壓力角
 def drawspuraction3(self, N=15,O=24 ,M=10, P=20):
+    outstring = '''
+&lt;!DOCTYPE html&gt; 
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="content-type" content="text/html;charset=utf-8"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;a href="index"&gt;index&lt;/a&gt;&lt;br /&gt;
+    
+&lt;!-- 以下為 canvas 畫圖程式 --&gt;
+&lt;script type="text/python"&gt;
+# 從 browser 導入 document
+from browser import document
+from math import *
+# 請注意, 這裡導入位於 Lib/site-packages 目錄下的 spur.py 檔案
+import spur
+
+# 準備在 id="plotarea" 的 canvas 中繪圖
+canvas = document["plotarea"]
+ctx = canvas.getContext("2d")
+
+# 以下利用 spur.py 程式進行繪圖
+# N 為齒數
+# 第1齒輪齒數
+n_g1 = '''+str(N)+'''
+# 第2齒輪齒數
+n_g2='''+str(O)+'''
+
+# M 為模數
+m = 8
+# 壓力角 P 單位為角度
+pa = 20
+
+# 計算兩齒輪的節圓半徑
+rp_g1 = m*n_g1/2
+rp_g2 = m*n_g2/2
+
+# 繪圖第1齒輪的圓心座標
+x_g1 = 400
+y_g1 = 400
+# 第2齒輪的圓心座標, 假設排列成水平, 表示各齒輪圓心 y 座標相同
+x_g2 = x_g1 
+y_g2 = y_g1 + rp_g1 + rp_g2
+
+# 將第1齒輪順時鐘轉 180 度
+# 使用 ctx.save() 與 ctx.restore() 以確保各齒輪以相對座標進行旋轉繪圖
+ctx.save()
+# translate to the origin of second gear
+ctx.translate(x_g1, y_g1)
+# rotate to engage
+ctx.rotate(pi)
+# put it back
+ctx.translate(-x_g1, -y_g1)
+spur.Spur(ctx).Gear(x_g1, y_g1, rp_g1, n_g1, pa, "blue")
+ctx.restore()
+# 將第2齒輪逆時鐘多轉一齒, 以便與第1齒輪進行囓合
+ctx.save()
+# translate to the origin of second gear
+ctx.translate(x_g2, y_g2)
+# rotate to engage
+ctx.rotate(-pi/n_g2)
+# put it back
+ctx.translate(-x_g2, -y_g2)
+spur.Spur(ctx).Gear(x_g2, y_g2, rp_g2, n_g2, pa, "black")
+ctx.restore()
+
+
+&lt;/script&gt;
+&lt;canvas id="plotarea" width="1200" height="1200"&gt;&lt;/canvas&gt;
+&lt;!-- 載入 brython.js --&gt;
+&lt;script type="text/javascript" src="/static/Brython3.1.1-20150328-091302/brython.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+window.onload=function(){
+brython();
+}
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+'''
+
+    return outstring
+</t>
+<t tx="2015.20150626150640.1">@cherrypy.expose
+# N 為齒數1, O為齒數2,M 為模數, P 為壓力角
+def gears(self, N=15,O=24, M=10, P=20):
+    outstring = '''
+&lt;!DOCTYPE html&gt; 
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="content-type" content="text/html;charset=utf-8"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    
+&lt;form method=POST action=gears&gt;
+&lt;p&gt;齒數1:
+&lt;select name=N&gt;
+&lt;option&gt;15
+&lt;option&gt;16
+&lt;option&gt;17
+&lt;option&gt;18
+&lt;option&gt;19
+&lt;option&gt;20
+&lt;option&gt;21
+&lt;option&gt;22
+&lt;option&gt;23
+&lt;option&gt;24
+&lt;option&gt;25
+&lt;option&gt;26
+&lt;option&gt;27
+&lt;option&gt;28
+&lt;option&gt;29
+&lt;option&gt;30
+&lt;option&gt;31
+&lt;option&gt;32
+&lt;option&gt;33
+&lt;option&gt;34
+&lt;option&gt;35
+&lt;option&gt;36
+&lt;option&gt;37
+&lt;option&gt;38
+&lt;option&gt;39
+&lt;option&gt;40
+&lt;option&gt;41
+&lt;option&gt;42
+&lt;option&gt;43
+&lt;option&gt;44
+&lt;option&gt;45
+&lt;option&gt;46
+&lt;option&gt;47
+&lt;option&gt;48
+&lt;option&gt;49
+&lt;option&gt;50
+&lt;option&gt;51
+&lt;option&gt;52
+&lt;option&gt;53
+&lt;option&gt;54
+&lt;option&gt;55
+&lt;option&gt;56
+&lt;option&gt;57
+&lt;option&gt;58
+&lt;option&gt;59
+&lt;option&gt;60
+&lt;option&gt;61
+&lt;option&gt;62
+&lt;option&gt;63
+&lt;option&gt;64
+&lt;option&gt;65
+&lt;option&gt;66
+&lt;option&gt;67
+&lt;option&gt;68
+&lt;option&gt;69
+&lt;option&gt;70
+&lt;option&gt;71
+&lt;option&gt;72
+&lt;option&gt;73
+&lt;option&gt;74
+&lt;option&gt;75
+&lt;option&gt;76
+&lt;option&gt;77
+&lt;option&gt;78
+&lt;option&gt;79
+&lt;option&gt;80
+
+
+&lt;/select&gt;
+&lt;p&gt;齒數2:
+&lt;select name=O&gt;
+&lt;option&gt;24
+&lt;option&gt;15
+&lt;option&gt;16
+&lt;option&gt;17
+&lt;option&gt;18
+&lt;option&gt;19
+&lt;option&gt;20
+&lt;option&gt;21
+&lt;option&gt;22
+&lt;option&gt;23
+
+&lt;option&gt;25
+&lt;option&gt;26
+&lt;option&gt;27
+&lt;option&gt;28
+&lt;option&gt;29
+&lt;option&gt;30
+&lt;option&gt;31
+&lt;option&gt;32
+&lt;option&gt;33
+&lt;option&gt;34
+&lt;option&gt;35
+&lt;option&gt;36
+&lt;option&gt;37
+&lt;option&gt;38
+&lt;option&gt;39
+&lt;option&gt;40
+&lt;option&gt;41
+&lt;option&gt;42
+&lt;option&gt;43
+&lt;option&gt;44
+&lt;option&gt;45
+&lt;option&gt;46
+&lt;option&gt;47
+&lt;option&gt;48
+&lt;option&gt;49
+&lt;option&gt;50
+&lt;option&gt;51
+&lt;option&gt;52
+&lt;option&gt;53
+&lt;option&gt;54
+&lt;option&gt;55
+&lt;option&gt;56
+&lt;option&gt;57
+&lt;option&gt;58
+&lt;option&gt;59
+&lt;option&gt;60
+&lt;option&gt;61
+&lt;option&gt;62
+&lt;option&gt;63
+&lt;option&gt;64
+&lt;option&gt;65
+&lt;option&gt;66
+&lt;option&gt;67
+&lt;option&gt;68
+&lt;option&gt;69
+&lt;option&gt;70
+&lt;option&gt;71
+&lt;option&gt;72
+&lt;option&gt;73
+&lt;option&gt;74
+&lt;option&gt;75
+&lt;option&gt;76
+&lt;option&gt;77
+&lt;option&gt;78
+&lt;option&gt;79
+&lt;option&gt;80
+
+&lt;/select&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;input type=submit value=畫出正齒輪輪廓&gt;
+&lt;/form&gt;
+&lt;br /&gt;&lt;a href="index"&gt;index&lt;/a&gt;&lt;br /&gt;
+&lt;!-- 載入 brython.js --&gt;
+&lt;script type="text/javascript" src="/static/Brython3.1.1-20150328-091302/brython.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+window.onload=function(){
+brython();
+}
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+'''
+
+    return outstring
+@cherrypy.expose
+# N 為齒數, M 為模數, P 為壓力角
+def gears(self, N=15,O=24 ,M=10, P=20):
     outstring = '''
 &lt;!DOCTYPE html&gt; 
 &lt;html&gt;
@@ -2039,6 +2296,7 @@ def index(self):
     &lt;body&gt;
     &lt;a href="spur"&gt;spur&lt;/a&gt;&lt;br /&gt;
     &lt;a href="drawspur3"&gt;drawspur3&lt;/a&gt;&lt;br /&gt;
+    &lt;a href="gears"&gt;gears&lt;/a&gt;&lt;br /&gt;
     &lt;/body&gt;
     &lt;/html&gt;
     '''
