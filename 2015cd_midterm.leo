@@ -570,7 +570,7 @@ def gears(self, N=15,O=24, M=10, P=20):
 &lt;/head&gt;
 &lt;body&gt;
     
-&lt;form method=POST action=gears&gt;
+&lt;form method=POST action=gears1&gt;
 &lt;p&gt;齒數1:
 &lt;select name=N&gt;
 &lt;option&gt;15
@@ -712,7 +712,9 @@ def gears(self, N=15,O=24, M=10, P=20):
 &lt;option&gt;79
 &lt;option&gt;80
 
+
 &lt;/select&gt;
+
 &lt;br /&gt;
 &lt;br /&gt;
 &lt;input type=submit value=畫出正齒輪輪廓&gt;
@@ -732,7 +734,7 @@ brython();
     return outstring
 @cherrypy.expose
 # N 為齒數, M 為模數, P 為壓力角
-def gears(self, N=15,O=24 ,M=10, P=20):
+def gears1(self, N=15,O=24 ,M=10, P=20):
     outstring = '''
 &lt;!DOCTYPE html&gt; 
 &lt;html&gt;
@@ -760,6 +762,10 @@ ctx = canvas.getContext("2d")
 n_g1 = '''+str(N)+'''
 # 第2齒輪齒數
 n_g2='''+str(O)+'''
+# 第3齒輪齒數
+n_g3='''+str(N)+'''
+# 第4齒輪齒數
+n_g4='''+str(O)+'''
 
 # M 為模數
 m = 8
@@ -769,6 +775,8 @@ pa = 20
 # 計算兩齒輪的節圓半徑
 rp_g1 = m*n_g1/2
 rp_g2 = m*n_g2/2
+rp_g3 = m*n_g3/2
+rp_g4 = m*n_g4/2
 
 # 繪圖第1齒輪的圓心座標
 x_g1 = 400
@@ -777,6 +785,14 @@ y_g1 = 400
 x_g2 = x_g1 
 y_g2 = y_g1 + rp_g1 + rp_g2
 
+x_g3 = x_g2 + rp_g2+ rp_g3
+y_g3 = y_g2
+
+x_g4 = x_g3 
+y_g4 = y_g3+ rp_g3+ rp_g4
+
+rotate3 = -pi/2-pi/n_g3+(pi/2+pi/n_g2)*n_g2/n_g3
+rotate4 = -pi/n_g4+(-pi/2+pi/n_g3)*n_g3/n_g4-(pi/2+pi/n_g2)*n_g2/n_g4
 # 將第1齒輪順時鐘轉 180 度
 # 使用 ctx.save() 與 ctx.restore() 以確保各齒輪以相對座標進行旋轉繪圖
 ctx.save()
@@ -788,6 +804,8 @@ ctx.rotate(pi)
 ctx.translate(-x_g1, -y_g1)
 spur.Spur(ctx).Gear(x_g1, y_g1, rp_g1, n_g1, pa, "blue")
 ctx.restore()
+ctx.font = "10px Verdana";
+ctx.fillText("賴湘焄繪製",x_g1, y_g1);
 # 將第2齒輪逆時鐘多轉一齒, 以便與第1齒輪進行囓合
 ctx.save()
 # translate to the origin of second gear
@@ -798,10 +816,36 @@ ctx.rotate(-pi/n_g2)
 ctx.translate(-x_g2, -y_g2)
 spur.Spur(ctx).Gear(x_g2, y_g2, rp_g2, n_g2, pa, "black")
 ctx.restore()
+ctx.font = "10px Verdana";
+ctx.fillText("賴湘焄繪製",x_g2, y_g2);
+# 將第3齒輪
+ctx.save()
+# translate to the origin of second gear
+ctx.translate(x_g3, y_g3)
+# rotate to engage
+ctx.rotate(rotate3)
+# put it back
+ctx.translate(-x_g3, -y_g3)
+spur.Spur(ctx).Gear(x_g3, y_g3, rp_g3, n_g3, pa, "red")
+ctx.restore()
+ctx.font = "10px Verdana";
+ctx.fillText("林詩容繪製",x_g3, y_g3);
+# 將第4齒輪
+ctx.save()
+# translate to the origin of second gear
+ctx.translate(x_g4, y_g4)
+# rotate to engage
+ctx.rotate(rotate4)
+# put it back
+ctx.translate(-x_g4, -y_g4)
+spur.Spur(ctx).Gear(x_g4, y_g4, rp_g4, n_g4, pa, "pink")
+ctx.restore()
+ctx.font = "10px Verdana";
+ctx.fillText("林詩容繪製",x_g4, y_g4);
 
 
 &lt;/script&gt;
-&lt;canvas id="plotarea" width="1200" height="1200"&gt;&lt;/canvas&gt;
+&lt;canvas id="plotarea" width="1800" height="2100"&gt;&lt;/canvas&gt;
 &lt;!-- 載入 brython.js --&gt;
 &lt;script type="text/javascript" src="/static/Brython3.1.1-20150328-091302/brython.js"&gt;&lt;/script&gt;
 &lt;script&gt;
@@ -2357,6 +2401,8 @@ def spur(self, N=20, M=5, P=15):
     
 40123112 
 賴湘焄
+40123105
+林詩容
 &lt;/body&gt;
 &lt;/html&gt;
 '''
